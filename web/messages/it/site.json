@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "services": "Servizi",
+    "about": "Chi sono",
+    "faq": "Domande",
+    "contact": "Contatti",
+    "home": "Home"
+  },
+  "actions": {
+    "call": "Chiama",
+    "whatsapp": "WhatsApp",
+    "directions": "Indicazioni",
+    "callback": "Richiedi di essere richiamato",
+    "send": "Invia",
+    "sending": "Invio in corso...",
+    "sent": "Grazie! La contatteremo a breve.",
+    "error": "Si è verificato un errore. Riprovi o ci chiami.",
+    "whatsappText": "Buongiorno, vorrei prenotare una visita.",
+    "openMaps": "Apri in Google Maps",
+    "loadMap": "Carica la mappa"
+  },
+  "form": {
+    "name": "Nome",
+    "phone": "Telefono",
+    "message": "Messaggio (facoltativo)",
+    "consent": "Acconsento al trattamento dei dati secondo l'<link>informativa sulla privacy</link>."
+  },
+  "hours": {
+    "title": "Orari",
+    "closed": "Chiuso",
+    "days": {
+      "Mo": "Lunedì",
+      "Tu": "Martedì",
+      "We": "Mercoledì",
+      "Th": "Giovedì",
+      "Fr": "Venerdì",
+      "Sa": "Sabato",
+      "Su": "Domenica"
+    },
+    "openNow": "Aperto ora"
+  },
+  "footer": {
+    "rights": "Tutti i diritti riservati.",
+    "privacy": "Privacy",
+    "madeWith": "Realizzato con cura"
+  },
+  "a11y": {
+    "skip": "Vai al contenuto",
+    "openMenu": "Apri il menu",
+    "closeMenu": "Chiudi il menu",
+    "language": "Lingua",
+    "nav": "Navigazione principale",
+    "map": "Mappa",
+    "sticky": "Azioni rapide"
+  },
+  "service": {
+    "back": "Torna ai servizi",
+    "related": "Altri servizi",
+    "cta": "Prenota una visita"
+  }
+}

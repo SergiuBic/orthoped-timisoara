@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "services": "Servicii",
+    "about": "Despre",
+    "faq": "Întrebări",
+    "contact": "Contact",
+    "home": "Acasă"
+  },
+  "actions": {
+    "call": "Sună",
+    "whatsapp": "WhatsApp",
+    "directions": "Direcții",
+    "callback": "Solicită apel",
+    "send": "Trimite",
+    "sending": "Se trimite...",
+    "sent": "Mulțumim! Vă contactăm în curând.",
+    "error": "A apărut o eroare. Încercați din nou sau sunați-ne.",
+    "whatsappText": "Bună ziua, aș dori o programare.",
+    "openMaps": "Deschide în Google Maps",
+    "loadMap": "Încarcă harta"
+  },
+  "form": {
+    "name": "Nume",
+    "phone": "Telefon",
+    "message": "Mesaj (opțional)",
+    "consent": "Sunt de acord cu prelucrarea datelor conform <link>politicii de confidențialitate</link>."
+  },
+  "hours": {
+    "title": "Program",
+    "closed": "Închis",
+    "days": {
+      "Mo": "Luni",
+      "Tu": "Marți",
+      "We": "Miercuri",
+      "Th": "Joi",
+      "Fr": "Vineri",
+      "Sa": "Sâmbătă",
+      "Su": "Duminică"
+    },
+    "openNow": "Deschis acum"
+  },
+  "footer": {
+    "rights": "Toate drepturile rezervate.",
+    "privacy": "Confidențialitate",
+    "madeWith": "Realizat cu grijă"
+  },
+  "a11y": {
+    "skip": "Sari la conținut",
+    "openMenu": "Deschide meniul",
+    "closeMenu": "Închide meniul",
+    "language": "Limba",
+    "nav": "Navigare principală",
+    "map": "Hartă",
+    "sticky": "Acțiuni rapide"
+  },
+  "service": {
+    "back": "Înapoi la servicii",
+    "related": "Alte servicii",
+    "cta": "Programează o consultație"
+  }
+}

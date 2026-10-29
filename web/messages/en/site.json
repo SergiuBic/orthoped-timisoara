@@ -1,0 +1,61 @@
+{
+  "nav": {
+    "services": "Services",
+    "about": "About",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "home": "Home"
+  },
+  "actions": {
+    "call": "Call",
+    "whatsapp": "WhatsApp",
+    "directions": "Directions",
+    "callback": "Request a callback",
+    "send": "Send",
+    "sending": "Sending...",
+    "sent": "Thank you! We will contact you shortly.",
+    "error": "Something went wrong. Please try again or call us.",
+    "whatsappText": "Hello, I would like to book an appointment.",
+    "openMaps": "Open in Google Maps",
+    "loadMap": "Load map"
+  },
+  "form": {
+    "name": "Name",
+    "phone": "Phone",
+    "message": "Message (optional)",
+    "consent": "I agree to the processing of my data according to the <link>privacy policy</link>."
+  },
+  "hours": {
+    "title": "Opening hours",
+    "closed": "Closed",
+    "days": {
+      "Mo": "Monday",
+      "Tu": "Tuesday",
+      "We": "Wednesday",
+      "Th": "Thursday",
+      "Fr": "Friday",
+      "Sa": "Saturday",
+      "Su": "Sunday"
+    },
+    "openNow": "Open now"
+  },
+  "footer": {
+    "rights": "All rights reserved.",
+    "privacy": "Privacy",
+    "madeWith": "Made with care"
+  },
+  "a11y": {
+    "skip": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "nav": "Main navigation",
+    "map": "Map",
+    "sticky": "Quick actions"
+  },
+  "service": {
+    "back": "Back to services",
+    "related": "Other services",
+    "cta": "Book a consultation"
+  }
+}
