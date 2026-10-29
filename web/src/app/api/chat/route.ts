@@ -66,7 +66,7 @@ export async function POST(req: Request) {
   const t = await getTranslations({ locale: locale as Locale, namespace: "Chat" });
   const phone = settings.phoneDisplay;
 
-  // Admin preview (task 10): no rate limit, nothing persisted.
+  // Admin preview: no rate limit, nothing persisted.
   const preview = req.headers.get("x-admin-preview") === "1" && (await getAdminOrNull()) !== null;
 
   const ua = req.headers.get("user-agent") ?? "";

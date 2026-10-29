@@ -24,7 +24,7 @@ export const viewport: Viewport = {
   ],
 };
 
-// Basic fallback; task 07 replaces this with lib/seo.
+// Layout-level defaults (metadataBase); pages override via lib/seo.
 export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) return {};

@@ -10,7 +10,7 @@ import { Field, Fieldset, SmallBtn, Switch, TextArea, TextField, inputCls } from
 import { useToast } from "./toast";
 
 const LOCALES = ["ro", "en", "it"] as const;
-const MODELS = ["gemini-2.5-flash", "gemini-2.5-flash-lite"];
+const MODELS = ["gemini-3.1-flash-lite", "gemini-3.1-flash"];
 
 export function AiForm({ initial }: { initial: AiSettings }) {
   const t = useTranslations("Admin.ai");

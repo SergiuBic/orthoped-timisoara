@@ -14,6 +14,8 @@ prod-up:
 logs:
 	docker compose logs -f --tail=100
 backup:
-	@echo "TODO (task 11)"
+	./infra/backup.sh
 n8n-import:
-	@echo "TODO (task 09)"
+	docker compose exec n8n n8n import:workflow --separate --input=/workflows
+	for id in $$(docker compose exec -T n8n n8n list:workflow | cut -d'|' -f1); do docker compose exec -T n8n n8n publish:workflow --id=$$id; done
+	docker compose restart n8n

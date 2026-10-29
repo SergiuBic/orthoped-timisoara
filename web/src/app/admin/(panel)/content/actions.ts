@@ -5,11 +5,10 @@ import { eq, and } from "drizzle-orm";
 import { generateText, Output } from "ai";
 import { requireAdmin } from "@/lib/auth";
 import { db, schema } from "@/lib/db";
-import { ContentSchemas, TAGS, contentKeys, saveContent, type ContentKey } from "@/lib/content";
+import { ContentSchemas, TAGS, getAiSettings, contentKeys, saveContent, type ContentKey } from "@/lib/content";
 import { seedContent } from "@/lib/content/seed";
 import { locales, type Locale } from "@/i18n/routing";
 import { google } from "@/lib/ai/gemini";
-import { getAiSettings } from "@/lib/content";
 import { reindexSite } from "@/lib/ai/index-site";
 import { fail, type ActionResult } from "../../_lib/result";
 
@@ -41,6 +40,7 @@ export async function resetContentAction(locale: string, key: string): Promise<A
   return { ok: true, data: seedContent[locale][key] };
 }
 
+const FALLBACK_MODEL = "gemini-3.1-flash-lite";
 const LANG: Record<Locale, string> = { ro: "Romanian", en: "English", it: "Italian" };
 
 /** Translate the RO form data into `target` with Gemini structured output. Does NOT save. */
@@ -53,18 +53,22 @@ export async function translateContentAction(key: string, target: string, roData
   if (!src.success) return fail("invalid_source");
   try {
     const ai = await getAiSettings();
-    const res = await generateText({
-      model: google(ai.model || process.env.GEMINI_CHAT_MODEL || "gemini-2.5-flash"),
-      temperature: 0.2,
-      output: Output.object({ schema: schemaForKey as never }),
-      system:
-        `You translate website content for an orthopedic surgeon's clinic from Romanian into ${LANG[target]}. ` +
-        "Keep the exact JSON structure. Keep placeholder tokens like {city}, {doctor}, {phone} unchanged and in place. " +
-        "Never translate or change `id`, `icon` and `focus` values. Preserve markdown structure (headings, lists, bold, links). " +
-        "Localize `slug` fields into natural lowercase URL slugs in the target language (ascii, hyphens, no diacritics). " +
-        "Keep medical terminology accurate. Keep strings starting with TODO-DOCTOR prefixed the same way.",
-      prompt: JSON.stringify(src.data),
-    });
+    const run = (model: string) =>
+      generateText({
+        model: google(model),
+        temperature: 0.2,
+        abortSignal: AbortSignal.timeout(90_000),
+        output: Output.object({ schema: schemaForKey as never }),
+        system:
+          `You translate website content for an orthopedic surgeon's clinic from Romanian into ${LANG[target]}. ` +
+          "Keep the exact JSON structure. Keep placeholder tokens like {city}, {doctor}, {phone} unchanged and in place. " +
+          "Never translate or change `id`, `icon` and `focus` values. Preserve markdown structure (headings, lists, bold, links). " +
+          "Localize `slug` fields into natural lowercase URL slugs in the target language (ascii, hyphens, no diacritics). " +
+          "Keep medical terminology accurate. Keep strings starting with TODO-DOCTOR prefixed the same way.",
+        prompt: JSON.stringify(src.data),
+      });
+    // Prefer the configured model; fall back to a known-available one if it is retired/unavailable.
+    const res = await run(ai.model || FALLBACK_MODEL).catch(() => run(FALLBACK_MODEL));
     const out = schemaForKey.safeParse(res.output);
     if (!out.success) return fail("bad_output");
     return { ok: true, data: out.data };

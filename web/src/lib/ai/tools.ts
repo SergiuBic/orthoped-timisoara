@@ -8,7 +8,7 @@ import type { Locale } from "@/i18n/routing";
 import type { SiteSettings } from "@/lib/content/types";
 import { retrieve } from "./retrieve";
 
-const PHONE_RE = /^[+0-9 ()-]{6,20}$/; // same as /api/lead (task 05)
+const PHONE_RE = /^[+0-9 ()-]{6,20}$/; // same as /api/lead
 const TZ = "Europe/Bucharest";
 const DAY_KEYS: Record<string, string> = { Mon: "Mo", Tue: "Tu", Wed: "We", Thu: "Th", Fri: "Fr", Sat: "Sa", Sun: "Su" };
 
