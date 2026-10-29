@@ -9,13 +9,17 @@
 		Permissions-Policy "camera=(), microphone=(), geolocation=()"
 		-Server
 	}
-	handle_path /n8n/* {
-		basic_auth {
-			{$N8N_BASIC_USER} {$N8N_BASIC_HASH}
-		}
-		reverse_proxy n8n:5678
-	}
 	reverse_proxy web:3000
+}
+
+# n8n editor on its own subdomain (DNS: A record "n8n" -> server IP).
+# Extra basic-auth layer in front of n8n's own login; public webhooks are not exposed (web calls n8n internally).
+n8n.{$DOMAIN} {
+	encode zstd gzip
+	basic_auth {
+		{$N8N_BASIC_USER} {$N8N_BASIC_HASH}
+	}
+	reverse_proxy n8n:5678
 }
 
 www.{$DOMAIN} {

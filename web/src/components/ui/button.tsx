@@ -5,7 +5,7 @@ export type ButtonVariant = "primary" | "secondary" | "ghost";
 export type ButtonSize = "md" | "lg";
 
 const BASE =
-  "inline-flex items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap select-none " +
+  "inline-flex items-center justify-center gap-2 rounded-full font-semibold max-w-full whitespace-nowrap text-center max-[340px]:whitespace-normal select-none " +
   "transition-[transform,box-shadow,background-color] duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] " +
   "hover:-translate-y-0.5 active:translate-y-0 " +
   "outline-2 outline-offset-2 outline-transparent focus-visible:outline-navy dark:focus-visible:outline-peach " +

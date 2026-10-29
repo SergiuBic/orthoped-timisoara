@@ -23,7 +23,7 @@ export async function ContactSection({
   const a = settings.address;
   return (
     <Section id="contact" title={data.heading} intro={data.text} glow="center">
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <GlassCard className="flex flex-col gap-6">
           <MapCard street={a.street} postalCode={a.postalCode} city={city} lat={a.lat} lng={a.lng} mapsUrl={a.mapsUrl} />
           <div>

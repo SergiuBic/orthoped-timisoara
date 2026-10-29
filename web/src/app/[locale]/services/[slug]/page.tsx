@@ -77,12 +77,12 @@ export default async function ServicePage({ params }: PageProps<"/[locale]/servi
           </ol>
         </nav>
 
-        <div className="grid items-start gap-8 lg:grid-cols-[1fr_20rem]">
+        <div className="grid grid-cols-[minmax(0,1fr)] items-start gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
           <div>
             <h1 className="font-display text-[clamp(2.25rem,5vw,4rem)] leading-[1.05] font-semibold tracking-tight text-balance">
               {item.seoTitle}
             </h1>
-            <p className="mt-4 text-lg text-muted">{item.summary}</p>
+            <p className="mt-4 text-lg text-muted break-words">{item.summary}</p>
             <GlassCard className="mt-8">
               <Markdown source={item.body} />
             </GlassCard>

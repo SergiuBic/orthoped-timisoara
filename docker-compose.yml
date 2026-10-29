@@ -32,9 +32,11 @@ services:
       N8N_BLOCK_ENV_ACCESS_IN_NODE: "false"
       INTERNAL_SECRET: ${INTERNAL_SECRET}
       WEB_INTERNAL_URL: http://web:3000
-      N8N_PATH: /n8n/
-      N8N_EDITOR_BASE_URL: https://${DOMAIN}/n8n/
-      WEBHOOK_URL: https://${DOMAIN}/n8n/
+      N8N_HOST: n8n.${DOMAIN}
+      N8N_PROTOCOL: https
+      N8N_EDITOR_BASE_URL: https://n8n.${DOMAIN}/
+      WEBHOOK_URL: https://n8n.${DOMAIN}/
+      N8N_PROXY_HOPS: "1"
     volumes:
       - n8ndata:/home/node/.n8n
       - ./infra/n8n:/workflows:ro
@@ -82,6 +84,8 @@ services:
       - "443:443/udp"
     environment:
       DOMAIN: ${DOMAIN}
+      N8N_BASIC_USER: ${N8N_BASIC_USER}
+      N8N_BASIC_HASH: ${N8N_BASIC_HASH}
     volumes:
       - ./infra/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data

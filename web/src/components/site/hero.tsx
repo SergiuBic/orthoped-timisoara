@@ -16,7 +16,7 @@ export function Hero({ hero, settings, city }: { hero: SiteContent["hero"]; sett
       className="relative overflow-hidden"
     >
       <Glow position="center" />
-      <div className="container-site grid items-center gap-10 pt-10 pb-16 md:grid-cols-2 md:gap-12 md:pt-16 md:pb-24 [@media(horizontal-viewport-segments:2)]:grid-cols-2 [@media(horizontal-viewport-segments:2)]:gap-x-[calc(env(viewport-segment-left_1_0)-env(viewport-segment-right_0_0))]">
+      <div className="container-site grid grid-cols-[minmax(0,1fr)] items-center gap-10 pt-10 pb-16 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] md:gap-12 md:pt-16 md:pb-24 [@media(horizontal-viewport-segments:2)]:grid-cols-2 [@media(horizontal-viewport-segments:2)]:gap-x-[calc(env(viewport-segment-left_1_0)-env(viewport-segment-right_0_0))]">
         <div>
           <p className="mb-3 text-sm font-semibold tracking-widest text-peach-deep uppercase">{hero.eyebrow}</p>
           <h1
