@@ -33,9 +33,11 @@ export function ScrollSteps({
   return (
     <div className="md:grid md:grid-cols-2 md:gap-12">
       <div
-        className="glass sticky top-20 z-10 mb-6 h-[45dvh] overflow-hidden rounded-3xl md:top-28 md:order-2 md:mb-0 md:h-[min(70dvh,40rem)] md:self-start"
+        className="glass sticky top-20 z-10 mb-6 h-[38dvh] overflow-hidden rounded-3xl md:top-28 md:order-2 md:mb-0 md:h-[min(70dvh,40rem)] md:self-start"
       >
-        {renderVisual(active)}
+        {/* Opaque backing on mobile so step text scrolling underneath never shows through the canvas. */}
+        <div aria-hidden className="absolute inset-0 bg-bg md:hidden" />
+        <div className="relative size-full">{renderVisual(active)}</div>
       </div>
       <ol className="space-y-6 md:space-y-0">
         {steps.map((s, i) => (

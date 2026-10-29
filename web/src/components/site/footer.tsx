@@ -60,6 +60,12 @@ export async function Footer({
       </div>
       <div className="container-site pb-6 text-sm text-muted">
         © {year} {settings.doctorName}. {t("footer.rights")}
+        <span className="mt-1 block text-xs">
+          3D anatomy: BodyParts3D © DBCLS,{" "}
+          <a href="/models/ATTRIBUTION.md" className="underline underline-offset-2">
+            CC BY-SA 2.1 JP
+          </a>
+        </span>
       </div>
     </footer>
   );

@@ -64,7 +64,7 @@ export function Hero({ hero, settings, city }: { hero: SiteContent["hero"]; sett
         <div className="relative mx-auto w-full max-w-md">
           <Lazy3D
             scene="hero"
-            className="pointer-events-none absolute -inset-8 -z-10 sm:-inset-12"
+            className="pointer-events-none absolute -inset-8 -z-10 sm:-inset-12 md:inset-auto md:top-[-8%] md:right-[72%] md:h-[116%] md:w-[min(24rem,34vw)]"
             fallbackAlt=""
           />
           <div className="glass relative aspect-[4/5] overflow-hidden rounded-3xl p-2">

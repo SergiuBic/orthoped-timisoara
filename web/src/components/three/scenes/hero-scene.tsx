@@ -13,7 +13,7 @@ import { useDark } from "./theme";
 
 const MAX_TILT = (9 * Math.PI) / 180;
 const NAMES = ["hipbone", "femur", "tibia", "fibula", "patella", "foot"] as const;
-const KNEE_RADIUS = 3.1; // object units (1 = 5 cm) of solid bone around the joint
+const KNEE_RADIUS = 4.2; // object units (1 = 5 cm) of solid bone around the joint
 
 /** Solid ivory bone that dissolves (with a glowing edge) into the hologram away from the knee. */
 function heroBone() {
@@ -29,11 +29,11 @@ function heroBone() {
         return mix(mix(mix(h31(i),h31(i+vec3(1,0,0)),f.x),mix(h31(i+vec3(0,1,0)),h31(i+vec3(1,1,0)),f.x),f.y),
                    mix(mix(h31(i+vec3(0,0,1)),h31(i+vec3(1,0,1)),f.x),mix(h31(i+vec3(0,1,1)),h31(i+vec3(1,1,1)),f.x),f.y),f.z); }`,
     early: /* glsl */ `
-      float dd = abs(vOP.y) + vn(vOP * 4.5) * 0.75;
-      if (dd > uR) discard;`,
+      float dd = abs(vOP.y) + (vn(vOP * 3.0) - 0.5) * 1.2;
+      float fadeT = smoothstep(uR - 2.2, uR + 0.4, dd);
+      if (h31(floor(vOP * 70.0) + 7.3) < fadeT) discard;`,
     late: /* glsl */ `
-      float edge = smoothstep(uR - 0.5, uR, dd);
-      outgoingLight += vec3(1.0, 0.62, 0.38) * edge * (1.3 + uPulse);`,
+      outgoingLight += vec3(1.0, 0.62, 0.38) * fadeT * 0.5 * (1.0 + uPulse);`,
   });
   return { m, uniforms };
 }

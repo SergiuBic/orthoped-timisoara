@@ -24,11 +24,11 @@ function buildPoses(lm: KneeLandmarks): Record<KneeFocus, Pose> {
   });
   const s = lm.latSign;
   return {
-    overview: mk(new Vector3(0, 0.05, 0), [-s * 3.7, 1.5, 7.0]),
-    acl: mk(aclMid.clone(), [s * 1.7, 0.35, 3.4]),
-    meniscus: mk(new Vector3(lm.medial.cx * 0.35, lm.medial.y, 0), [-s * 1.1, 3.7, 3.0]),
-    cartilage: mk(new Vector3(lm.notchX, 0.2, 0.05), [-s * 3.0, 1.0, 3.8]),
-    patella: mk(lm.patellaFront.clone().multiplyScalar(0.75), [-s * 4.6, 0.3, 1.8]),
+    overview: mk(new Vector3(0, 0.15, 0), [-s * 4.6, 1.9, 9.0]),
+    acl: mk(aclMid.clone(), [s * 2.1, 0.5, 4.5]),
+    meniscus: mk(new Vector3(lm.medial.cx * 0.35, lm.medial.y + 0.2, 0), [-s * 1.5, 4.6, 4.2]),
+    cartilage: mk(new Vector3(lm.notchX, 0.55, 0.05), [-s * 3.9, 1.4, 5.4]),
+    patella: mk(new Vector3(0, 0.1, 0.45), [-s * 5.6, 0.6, 3.0]),
   };
 }
 
@@ -137,7 +137,7 @@ function KneeContent({ focus, labels }: { focus: KneeFocus; labels?: KneeScenePr
 export default function KneeScene({ active, onReady, focus = "overview", labels }: KneeSceneProps) {
   useEffect(() => preloadModel("knee"), []);
   return (
-    <Stage active={active} onReady={onReady} cameraPosition={[-3.7, 1.5, 7]} shadowY={-3.35} floorSize={9} interactive>
+    <Stage active={active} onReady={onReady} cameraPosition={[-4.6, 2, 9]} shadowY={-3.35} floorSize={9} interactive>
       <KneeContent focus={focus} labels={labels} />
     </Stage>
   );

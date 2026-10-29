@@ -100,6 +100,7 @@ export interface XrayUniforms {
   uOpacity: IUniform<number>;
   uPower: IUniform<number>;
   uTime: IUniform<number>;
+  uBase: IUniform<number>;
   uFade: IUniform<Vector2>; // object-space y range [lo, hi] in which the part fades out toward the ends (0,0 = off)
 }
 
@@ -115,6 +116,7 @@ export function xrayMaterial(): ShaderMaterial & { uniforms: XrayUniforms } {
       uOpacity: { value: 1 },
       uPower: { value: 2.4 },
       uTime: { value: 0 },
+      uBase: { value: 0.07 },
       uFade: { value: new Vector2(0, 0) },
     } satisfies XrayUniforms,
     vertexShader: /* glsl */ `
@@ -127,13 +129,13 @@ export function xrayMaterial(): ShaderMaterial & { uniforms: XrayUniforms } {
         gl_Position = projectionMatrix * mv;
       }`,
     fragmentShader: /* glsl */ `
-      uniform vec3 uRim; uniform vec3 uCore; uniform float uOpacity; uniform float uPower; uniform float uTime; uniform vec2 uFade;
+      uniform vec3 uRim; uniform vec3 uCore; uniform float uOpacity; uniform float uPower; uniform float uTime; uniform float uBase; uniform vec2 uFade;
       varying vec3 vN; varying vec3 vV; varying vec3 vO;
       void main() {
         float ndv = abs(dot(normalize(vN), normalize(vV)));
         float f = pow(1.0 - ndv, uPower);
         float scan = 0.5 + 0.5 * sin(vO.y * 22.0 - uTime * 0.9);
-        float a = (0.07 + f * 0.9) * (0.88 + 0.12 * scan);
+        float a = (uBase + f * 0.9) * (0.88 + 0.12 * scan);
         if (uFade.y > uFade.x) a *= 1.0 - smoothstep(uFade.x, uFade.y, abs(vO.y));
         vec3 col = mix(uCore, uRim, smoothstep(0.0, 0.9, f));
         gl_FragColor = vec4(col, a * uOpacity);
@@ -152,10 +154,12 @@ export function setXrayTheme(m: ShaderMaterial & { uniforms: XrayUniforms }, dar
     m.blending = AdditiveBlending;
     m.uniforms.uRim.value.set(PEACH);
     m.uniforms.uCore.value.set("#7FA8FF");
+    m.uniforms.uBase.value = 0.07;
   } else {
     m.blending = NormalBlending;
-    m.uniforms.uRim.value.set("#1D3461");
-    m.uniforms.uCore.value.set("#E8916A");
+    m.uniforms.uRim.value.set("#1B3162");
+    m.uniforms.uCore.value.set("#6F8FC4");
+    m.uniforms.uBase.value = 0.045;
   }
   m.needsUpdate = true;
 }
