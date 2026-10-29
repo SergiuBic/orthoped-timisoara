@@ -1,17 +1,149 @@
 import {
   BufferGeometry,
   CatmullRomCurve3,
+  CylinderGeometry,
   ExtrudeGeometry,
   Float32BufferAttribute,
   LatheGeometry,
+  Matrix4,
   Path,
   Shape,
+  SphereGeometry,
+  SplineCurve,
+  TorusGeometry,
   TubeGeometry,
   Vector2,
   Vector3,
 } from "three";
+import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
-/** Procedural parts that are fitted onto the real bone meshes. Units: 1 = 50 mm. Y up, +Z anterior. */
+/** Joint layout (units ~ cm/3). Y up, +Z anterior (front), X lateral/medial. */
+export const KNEE_PIVOT = new Vector3(0, 0.1, -0.12);
+
+/** Smooth lathe from a list of [radius, y] control points (any order). */
+function lathe(ctrl: [number, number][], samples = 56, segments = 40): LatheGeometry {
+  const pts = ctrl.map(([r, y]) => new Vector2(r, y));
+  const smooth = new SplineCurve(pts).getPoints(samples).map((p) => new Vector2(Math.max(p.x, 0), p.y));
+  if (smooth[0].y > smooth[smooth.length - 1].y) smooth.reverse();
+  return new LatheGeometry(smooth, segments);
+}
+
+function ellipsoid(rx: number, ry: number, rz: number, x: number, y: number, z: number, w = 36, h = 24) {
+  const g = new SphereGeometry(1, w, h);
+  g.applyMatrix4(new Matrix4().makeScale(rx, ry, rz));
+  g.translate(x, y, z);
+  return g;
+}
+
+/** Distal femur: shaft + metaphysis + two condyles + trochlear ridges. */
+export function createFemur(): BufferGeometry {
+  const shaft = lathe([
+    [0, 0.05],
+    [0.5, 0.12],
+    [0.62, 0.45],
+    [0.5, 0.9],
+    [0.38, 1.35],
+    [0.31, 1.9],
+    [0.29, 2.4],
+    [0.3, 2.8],
+    [0, 2.8],
+  ]);
+  shaft.applyMatrix4(new Matrix4().makeScale(1.15, 1, 0.9));
+  shaft.translate(0, 0, -0.05);
+  return mergeGeometries([
+    shaft,
+    ellipsoid(0.36, 0.42, 0.62, -0.45, 0.1, -0.12), // medial condyle
+    ellipsoid(0.34, 0.4, 0.58, 0.45, 0.1, -0.1), // lateral condyle
+    ellipsoid(0.2, 0.45, 0.24, -0.26, 0.3, 0.3), // trochlear ridges
+    ellipsoid(0.2, 0.45, 0.26, 0.28, 0.3, 0.3),
+  ])!;
+}
+
+/** Proximal tibia with plateau, spine, tuberosity and a tapered shaft. */
+export function createTibia(): BufferGeometry {
+  const body = lathe([
+    [0, -0.5],
+    [0.55, -0.5],
+    [0.69, -0.56],
+    [0.7, -0.72],
+    [0.58, -1.0],
+    [0.42, -1.5],
+    [0.33, -2.05],
+    [0.31, -2.8],
+    [0, -2.85],
+  ]);
+  body.applyMatrix4(new Matrix4().makeScale(1.12, 1, 0.88));
+  body.translate(0, 0, -0.04);
+  return mergeGeometries([
+    body,
+    ellipsoid(0.07, 0.1, 0.11, -0.1, -0.47, -0.02, 16, 12), // tibial spines
+    ellipsoid(0.07, 0.1, 0.11, 0.1, -0.47, -0.02, 16, 12),
+    ellipsoid(0.17, 0.36, 0.14, 0, -1.15, 0.4), // tuberosity
+  ])!;
+}
+
+export function createFibula(): BufferGeometry {
+  const g = lathe(
+    [
+      [0, -3.0],
+      [0.09, -2.97],
+      [0.085, -2.4],
+      [0.075, -1.5],
+      [0.095, -0.95],
+      [0.17, -0.75],
+      [0.18, -0.6],
+      [0.1, -0.5],
+      [0, -0.5],
+    ],
+    40,
+    20,
+  );
+  g.rotateZ(-0.03);
+  g.translate(0.88, 0, -0.24);
+  return g;
+}
+
+export function createPatella(): BufferGeometry {
+  const g = ellipsoid(0.3, 0.36, 0.15, 0, 0, 0, 32, 20);
+  g.rotateX(-0.12);
+  return g;
+}
+
+export const PATELLA_POS = new Vector3(0, 0.05, 0.74);
+
+/** Cartilage caps on femoral condyles (open shells, lower hemisphere). */
+export function createFemoralCartilage(): BufferGeometry {
+  const cap = (rx: number, ry: number, rz: number, x: number, y: number, z: number) => {
+    const g = new SphereGeometry(1, 40, 20, 0, Math.PI * 2, Math.PI * 0.42, Math.PI * 0.58);
+    g.applyMatrix4(new Matrix4().makeScale(rx * 1.04, ry * 1.04, rz * 1.04));
+    g.translate(x, y, z);
+    return g;
+  };
+  return mergeGeometries([cap(0.36, 0.42, 0.62, -0.45, 0.1, -0.12), cap(0.34, 0.4, 0.58, 0.45, 0.1, -0.1)])!;
+}
+
+export function createTibialCartilage(): BufferGeometry {
+  const disc = (x: number) => {
+    const g = new CylinderGeometry(0.36, 0.36, 0.035, 36);
+    g.applyMatrix4(new Matrix4().makeScale(1, 1, 1.3));
+    g.translate(x, -0.495, -0.02);
+    return g;
+  };
+  return mergeGeometries([disc(-0.4), disc(0.4)])!;
+}
+
+/** Two C-shaped menisci (300 degree torus arcs, flattened, gaps facing the notch). */
+export function createMenisci(): BufferGeometry {
+  const make = (x: number, rotZ: number) => {
+    const g = new TorusGeometry(0.28, 0.1, 14, 40, (Math.PI * 2 * 300) / 360);
+    g.scale(0.9, 1.3, 0.58);
+    g.rotateZ(rotZ);
+    g.rotateX(-Math.PI / 2);
+    g.translate(x, -0.43, -0.02);
+    return g;
+  };
+  return mergeGeometries([make(-0.4, (30 * Math.PI) / 180), make(0.4, (-150 * Math.PI) / 180)])!;
+}
 
 /** Twisted ligament tube between two attachment points. */
 export function createLigament(a: Vector3, b: Vector3, radius: number, twist: number, bow: Vector3): BufferGeometry {
@@ -19,7 +151,7 @@ export function createLigament(a: Vector3, b: Vector3, radius: number, twist: nu
   const u = new Vector3(1, 0, 0).cross(dir).normalize();
   const v = dir.clone().cross(u);
   const pts: Vector3[] = [];
-  const n = 14;
+  const n = 12;
   for (let i = 0; i <= n; i++) {
     const t = i / n;
     const env = Math.sin(Math.PI * t);
@@ -28,168 +160,133 @@ export function createLigament(a: Vector3, b: Vector3, radius: number, twist: nu
       a
         .clone()
         .lerp(b, t)
-        .addScaledVector(u, Math.cos(ang) * 0.03 * env)
-        .addScaledVector(v, Math.sin(ang) * 0.03 * env)
+        .addScaledVector(u, Math.cos(ang) * 0.035 * env)
+        .addScaledVector(v, Math.sin(ang) * 0.035 * env)
         .addScaledVector(bow, env),
     );
   }
-  // slightly fanned ends (ligaments flare where they meet bone)
-  const g = new TubeGeometry(new CatmullRomCurve3(pts), 36, radius, 14, false);
-  const pos = g.getAttribute("position");
-  const ring = 15;
-  const centre = new CatmullRomCurve3(pts);
-  const c = new Vector3();
-  const p = new Vector3();
-  for (let i = 0; i < pos.count; i++) {
-    const seg = Math.floor(i / ring) / 36;
-    const flare = 1 + 0.55 * (Math.pow(1 - seg, 6) + Math.pow(seg, 6));
-    centre.getPointAt(Math.min(seg, 1), c);
-    p.fromBufferAttribute(pos, i).sub(c).multiplyScalar(flare).add(c);
-    pos.setXYZ(i, p.x, p.y, p.z);
+  return new TubeGeometry(new CatmullRomCurve3(pts), 28, radius, 10, false);
+}
+
+export const ACL_ENDS = [new Vector3(0.07, 0.14, -0.22), new Vector3(-0.05, -0.47, 0.14)] as const;
+export const PCL_ENDS = [new Vector3(-0.05, 0.14, -0.02), new Vector3(0.03, -0.47, -0.4)] as const;
+
+/* ------------------------------ fracture ------------------------------ */
+
+export const SHAFT_HALF = 3.5;
+const DOME = 0.32;
+const SEG = 56;
+export const shaftRadius = (x: number) => 0.4 + 0.2 * Math.pow(Math.abs(x) / SHAFT_HALF, 3);
+
+/** Jagged, oblique fracture line (axial position of the cut vs. angle). Shared by both pieces. */
+function cutX(theta: number): number {
+  const tri = Math.abs(((theta / (Math.PI * 2)) * 6) % 1 * 2 - 1);
+  return 0.2 * (tri * 2 - 1) + 0.24 * Math.cos(theta - 0.8);
+}
+
+/**
+ * One half of the tibial shaft. side -1 = left half, +1 = right half.
+ * Both halves share the same cut curve, so they fit together seamlessly.
+ */
+export function createShaftPiece(side: -1 | 1): BufferGeometry {
+  type Station = (theta: number) => { x: number; r: number };
+  const stations: Station[] = [];
+  const D = 8;
+  for (let d = D; d >= 0; d--) {
+    const phi = (d / D) * (Math.PI / 2);
+    stations.push(() => {
+      const x = side * (SHAFT_HALF + DOME * Math.sin(phi));
+      return { x, r: shaftRadius(side * SHAFT_HALF) * Math.cos(phi) };
+    });
   }
-  g.computeVertexNormals();
-  return g;
-}
+  const BODY = 28;
+  for (let k = 1; k <= BODY; k++) {
+    const t = k / BODY;
+    stations.push((th) => {
+      const x0 = side * SHAFT_HALF;
+      const x = x0 + (cutX(th) - x0) * t;
+      return { x, r: shaftRadius(x0 + (0 - x0) * t) };
+    });
+  }
+  const CAP = 5;
+  for (let k = 1; k <= CAP; k++) {
+    const m = 1 - k / CAP;
+    stations.push((th) => {
+      const x = cutX(th) + side * (0.1 * (1 - m) * (1 - m) + 0.05 * m * Math.sin(th * 5 + m * 7));
+      return { x, r: shaftRadius(0) * m };
+    });
+  }
 
-export interface MeniscusSpec {
-  cx: number;
-  cz: number;
-  y: number;
-  rx: number;
-  rz: number;
-  /** Angle (param of the ellipse) at the middle of the opening. */
-  open: number;
-  /** Opening size (radians). */
-  gap: number;
-  width: number;
-  height: number;
-}
-
-/** Crescent fibrocartilage: wedge cross-section (thick outer rim, thin inner edge) swept around an ellipse. */
-export function createMeniscus(s: MeniscusSpec): BufferGeometry {
-  const N = 72;
-  const prof = [
-    [0, 0], // outer bottom
-    [0, 1], // outer top
-    [0.28, 0.82],
-    [0.55, 0.52],
-    [0.8, 0.22],
-    [1, 0.05], // inner top
-    [1, 0], // inner bottom
-  ] as const;
-  const M = prof.length;
   const pos: number[] = [];
-  const idx: number[] = [];
-  for (let i = 0; i <= N; i++) {
-    const t = i / N;
-    const phi = s.open + s.gap / 2 + t * (Math.PI * 2 - s.gap);
-    const taper = Math.pow(Math.sin(Math.PI * t), 0.55); // pinched horns
-    for (let j = 0; j < M; j++) {
-      const [w, h] = prof[j];
-      const rx = s.rx - w * s.width * taper;
-      const rz = s.rz - w * s.width * taper;
-      pos.push(s.cx + Math.cos(phi) * rx, s.y + h * s.height * (0.25 + 0.75 * taper), s.cz + Math.sin(phi) * rz);
+  for (const st of stations) {
+    for (let i = 0; i < SEG; i++) {
+      const th = (i / SEG) * Math.PI * 2;
+      const { x, r } = st(th);
+      pos.push(x, r * Math.cos(th), r * Math.sin(th));
     }
   }
-  for (let i = 0; i < N; i++) {
-    for (let j = 0; j < M; j++) {
-      const a = i * M + j;
-      const b = i * M + ((j + 1) % M);
-      idx.push(a, a + M, b, b, a + M, b + M);
+  const idx: number[] = [];
+  for (let j = 0; j < stations.length - 1; j++) {
+    for (let i = 0; i < SEG; i++) {
+      const a = j * SEG + i;
+      const b = j * SEG + ((i + 1) % SEG);
+      const c = (j + 1) * SEG + i;
+      const d = (j + 1) * SEG + ((i + 1) % SEG);
+      idx.push(a, c, b, b, c, d);
     }
   }
   const g = new BufferGeometry();
   g.setAttribute("position", new Float32BufferAttribute(pos, 3));
   g.setIndex(idx);
   g.computeVertexNormals();
-  // winding check: the top-outer vertex normal should point up/outward
+
+  // Auto-orient: a mid-body vertex normal must point away from the axis.
+  const p = g.getAttribute("position");
   const n = g.getAttribute("normal");
-  const probe = Math.floor(N / 2) * M + 1;
-  const px = g.getAttribute("position").getX(probe) - s.cx;
-  const pz = g.getAttribute("position").getZ(probe) - s.cz;
-  if (n.getX(probe) * px + n.getZ(probe) * pz < 0) {
-    const flipped = idx.slice();
-    for (let i = 0; i < flipped.length; i += 3) [flipped[i + 1], flipped[i + 2]] = [flipped[i + 2], flipped[i + 1]];
-    g.setIndex(flipped);
+  const probe = (D + Math.floor(BODY / 2)) * SEG;
+  const outward = p.getY(probe) * n.getY(probe) + p.getZ(probe) * n.getZ(probe);
+  if (outward < 0) {
+    for (let i = 0; i < idx.length; i += 3) {
+      const t = idx[i + 1];
+      idx[i + 1] = idx[i + 2];
+      idx[i + 2] = t;
+    }
+    g.setIndex(idx);
     g.computeVertexNormals();
   }
   return g;
 }
 
-/**
- * Thin shell copied from the triangles of `src` that pass `pick`, pushed out along the vertex normals.
- * Used for articular cartilage that sits exactly on the real bone surface.
- */
-export function extractPatch(
-  src: BufferGeometry,
-  pick: (c: Vector3, n: Vector3) => boolean,
-  offset: number,
-): BufferGeometry {
-  const pos = src.getAttribute("position");
-  const nor = src.getAttribute("normal");
-  const index = src.index!;
-  const remap = new Map<number, number>();
-  const P: number[] = [];
-  const N: number[] = [];
-  const I: number[] = [];
-  const c = new Vector3();
-  const n = new Vector3();
-  const v = new Vector3();
-  const tmp = new Vector3();
-  for (let t = 0; t < index.count; t += 3) {
-    const a = index.getX(t);
-    const b = index.getX(t + 1);
-    const d = index.getX(t + 2);
-    c.set(0, 0, 0);
-    n.set(0, 0, 0);
-    for (const i of [a, b, d]) {
-      c.add(v.fromBufferAttribute(pos, i));
-      n.add(tmp.fromBufferAttribute(nor, i));
-    }
-    c.divideScalar(3);
-    n.normalize();
-    if (!pick(c, n)) continue;
-    for (const i of [a, b, d]) {
-      let m = remap.get(i);
-      if (m === undefined) {
-        m = P.length / 3;
-        remap.set(i, m);
-        v.fromBufferAttribute(pos, i);
-        tmp.fromBufferAttribute(nor, i);
-        P.push(v.x + tmp.x * offset, v.y + tmp.y * offset, v.z + tmp.z * offset);
-        N.push(tmp.x, tmp.y, tmp.z);
-      }
-      I.push(m);
-    }
+/** Spindle-shaped callus bulge around the cut (rotated so its axis is X). */
+export function createCallus(): BufferGeometry {
+  const pts: Vector2[] = [];
+  for (let k = -18; k <= 18; k++) {
+    const x = k * 0.075;
+    pts.push(new Vector2(0.38 + 0.22 * Math.exp(-Math.pow(x / 0.55, 2)), x));
   }
-  const g = new BufferGeometry();
-  g.setAttribute("position", new Float32BufferAttribute(P, 3));
-  g.setAttribute("normal", new Float32BufferAttribute(N, 3));
-  g.setIndex(I);
+  const g = new LatheGeometry(pts, 40);
+  g.rotateZ(-Math.PI / 2);
   return g;
 }
 
-/* ------------------------------ hardware ------------------------------ */
-
+export const PLATE_RADIUS = 0.445;
 export const PLATE_THICK = 0.05;
+export const SCREW_XS = [-1.2, -0.9, -0.6, 0.6, 0.9, 1.2];
 
-/**
- * Locking plate lying on a shaft. Local frame: Y along the shaft, the surface normal is +Z.
- * `lift(y)` returns the distance from the plate's local origin plane to the bone surface at that y,
- * so the plate follows the real (tapering) shaft.
- */
-export function createPlate(length: number, width: number, holeYs: number[], lift: (y: number) => number): BufferGeometry {
-  const r = width / 2;
+/** Locking plate with 6 screw holes, bent to wrap the shaft (axis X, lying on the +Z side). */
+export function createPlate(): BufferGeometry {
+  const L = 3.2;
+  const W = 0.32;
+  const r = W / 2;
   const s = new Shape();
-  const L = length / 2;
-  s.moveTo(-r, -L + r);
-  s.lineTo(-r, L - r * 1.6);
-  s.absarc(0, L - r * 1.6, r, Math.PI, 0, true);
-  s.lineTo(r, -L + r);
-  s.absarc(0, -L + r, r, 0, Math.PI, true);
-  for (const y of holeYs) {
+  s.moveTo(-L / 2 + r, -r);
+  s.lineTo(L / 2 - r, -r);
+  s.absarc(L / 2 - r, 0, r, -Math.PI / 2, Math.PI / 2, false);
+  s.lineTo(-L / 2 + r, r);
+  s.absarc(-L / 2 + r, 0, r, Math.PI / 2, (Math.PI * 3) / 2, false);
+  for (const x of SCREW_XS) {
     const h = new Path();
-    h.absarc(0, y, 0.052, 0, Math.PI * 2, true);
+    h.absarc(x, 0, 0.06, 0, Math.PI * 2, true);
     s.holes.push(h);
   }
   const g = new ExtrudeGeometry(s, {
@@ -197,16 +294,17 @@ export function createPlate(length: number, width: number, holeYs: number[], lif
     bevelEnabled: true,
     bevelSize: 0.012,
     bevelThickness: 0.012,
-    bevelSegments: 3,
-    curveSegments: 16,
-    steps: 1,
+    bevelSegments: 2,
+    curveSegments: 14,
   });
   const p = g.getAttribute("position");
   for (let i = 0; i < p.count; i++) {
     const y = p.getY(i);
-    const x = p.getX(i);
-    // wrap across the width a little (shaft curvature) and ride the surface along its length
-    p.setZ(i, p.getZ(i) + lift(y) - 0.6 * x * x);
+    const z = p.getZ(i);
+    const ang = y / PLATE_RADIUS;
+    const rr = PLATE_RADIUS + z;
+    p.setY(i, rr * Math.sin(ang));
+    p.setZ(i, rr * Math.cos(ang));
   }
   g.computeVertexNormals();
   return g;
@@ -214,13 +312,13 @@ export function createPlate(length: number, width: number, holeYs: number[], lif
 
 /** Cortical screw with a sawtooth thread, axis +Z (head up), shaft going into -Z. */
 export function createScrew(): BufferGeometry {
-  const pts: Vector2[] = [new Vector2(0, 0.06), new Vector2(0.095, 0.06), new Vector2(0.095, 0.0), new Vector2(0.04, 0.0)];
+  const pts: Vector2[] = [new Vector2(0, 0.06), new Vector2(0.1, 0.06), new Vector2(0.1, 0.0), new Vector2(0.045, 0.0)];
   const turns = 16;
   for (let i = 0; i <= turns; i++) {
-    const y = -0.02 - (i / turns) * 0.5;
-    pts.push(new Vector2(0.062, y), new Vector2(0.038, y - 0.015));
+    const y = -0.02 - (i / turns) * 0.78;
+    pts.push(new Vector2(0.065, y), new Vector2(0.04, y - 0.025));
   }
-  pts.push(new Vector2(0.0, -0.56));
+  pts.push(new Vector2(0.0, -0.84));
   pts.reverse();
   const g = new LatheGeometry(pts, 14);
   g.rotateX(Math.PI / 2);

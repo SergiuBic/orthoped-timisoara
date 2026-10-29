@@ -2,38 +2,37 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Vector3, type BufferGeometry, type Group, type Material, type MeshPhysicalMaterial } from "three";
-import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { Vector3, type Group, type MeshPhysicalMaterial } from "three";
 import type { KneeFocus } from "../types";
-import { createLigament, createMeniscus, extractPatch } from "./anatomy";
-import { damp, patch } from "./damp";
-import { computeKneeLandmarks, type KneeLandmarks } from "./fit";
 import {
-  boneMaterial,
-  cartilageMaterial,
-  ligamentMaterial,
-  meniscusMaterial,
-  setXrayTheme,
-  xrayMaterial,
-} from "./materials";
-import { useBoneGeometries } from "./models";
-import { Tag } from "./tag";
-import { useDark } from "./theme";
+  ACL_ENDS,
+  KNEE_PIVOT,
+  PATELLA_POS,
+  PCL_ENDS,
+  createFemoralCartilage,
+  createFemur,
+  createFibula,
+  createLigament,
+  createMenisci,
+  createPatella,
+  createTibia,
+  createTibialCartilage,
+} from "./anatomy";
+import { damp, patch } from "./damp";
+import { boneMaterial, cartilageMaterial, ligamentMaterial, meniscusMaterial } from "./materials";
 
-type PartKey = "femur" | "tibia" | "fibula" | "patella" | "cart" | "menisci" | "acl" | "pcl";
-const PARTS: PartKey[] = ["femur", "tibia", "fibula", "patella", "cart", "menisci", "acl", "pcl"];
-const BONES: PartKey[] = ["femur", "tibia", "fibula", "patella"];
-const BASE_OPACITY: Record<PartKey, number> = { femur: 1, tibia: 1, fibula: 1, patella: 1, cart: 0.66, menisci: 1, acl: 1, pcl: 1 };
+type PartKey = "femur" | "tibia" | "patella" | "cart" | "menisci" | "acl" | "pcl";
+const PARTS: PartKey[] = ["femur", "tibia", "patella", "cart", "menisci", "acl", "pcl"];
+const BASE_OPACITY: Record<PartKey, number> = { femur: 1, tibia: 1, patella: 1, cart: 0.6, menisci: 1, acl: 1, pcl: 1 };
 
-/** Solid visibility (0..1) of every part per focus. Bones that fade out are replaced by the x-ray look. */
+/** Visibility (0..1) of every part per focus. */
 const VIS: Record<KneeFocus, Record<PartKey, number>> = {
-  overview: { femur: 1, tibia: 1, fibula: 1, patella: 1, cart: 1, menisci: 1, acl: 1, pcl: 1 },
-  acl: { femur: 0, tibia: 0, fibula: 0, patella: 0, cart: 0.12, menisci: 0.35, acl: 1, pcl: 0.5 },
-  meniscus: { femur: 0, tibia: 0.75, fibula: 0.2, patella: 0, cart: 0.25, menisci: 1, acl: 0, pcl: 0 },
-  cartilage: { femur: 0, tibia: 0, fibula: 0, patella: 0, cart: 1, menisci: 0.3, acl: 0, pcl: 0 },
-  patella: { femur: 0, tibia: 0, fibula: 0, patella: 1, cart: 0.5, menisci: 0.2, acl: 0, pcl: 0 },
+  overview: { femur: 1, tibia: 1, patella: 1, cart: 1, menisci: 1, acl: 1, pcl: 1 },
+  acl: { femur: 0.3, tibia: 0.3, patella: 0.1, cart: 0.25, menisci: 0.3, acl: 1, pcl: 0.45 },
+  meniscus: { femur: 0.07, tibia: 0.5, patella: 0.07, cart: 0.3, menisci: 1, acl: 0, pcl: 0 },
+  cartilage: { femur: 0.35, tibia: 0.35, patella: 0.2, cart: 1, menisci: 0.3, acl: 0, pcl: 0 },
+  patella: { femur: 0.45, tibia: 0.45, patella: 1, cart: 0.3, menisci: 0.3, acl: 0, pcl: 0 },
 };
-const XRAY: Record<KneeFocus, number> = { overview: 0, acl: 0.75, meniscus: 0.8, cartilage: 0.7, patella: 0.75 };
 const GLOW: Record<KneeFocus, PartKey[]> = {
   overview: [],
   acl: ["acl"],
@@ -41,108 +40,58 @@ const GLOW: Record<KneeFocus, PartKey[]> = {
   cartilage: ["cart"],
   patella: ["patella"],
 };
-const LIFT: Record<KneeFocus, number> = { overview: 0, acl: 0, meniscus: 1.5, cartilage: 0.7, patella: 0 };
-const FLEX: Record<KneeFocus, number> = { overview: 0, acl: 0, meniscus: 0, cartilage: 0, patella: 40 };
-const GLOW_PEAK = 0.55;
+const LIFT: Record<KneeFocus, number> = { overview: 0, acl: 0, meniscus: 1.5, cartilage: 0.8, patella: 0 };
+const GLOW_PEAK = 0.6;
 
-export interface KneeData {
-  geo: Record<"femur" | "tibia" | "fibula" | "patella", BufferGeometry>;
-  lm: KneeLandmarks;
-  tissue: Record<"cartF" | "cartT" | "cartP" | "menisci" | "acl" | "pcl", BufferGeometry>;
-}
-
-/** Loads the real bones and fits the soft tissue to them. Suspends until the GLB is ready. */
-export function useKneeData(): KneeData {
-  const geo = useBoneGeometries("knee", ["femur", "tibia", "fibula", "patella"] as const);
-  const data = useMemo<KneeData>(() => {
-    const lm = computeKneeLandmarks(geo);
-    const f0 = lm.femurMinY;
-    const cartF = extractPatch(
-      geo.femur,
-      (c, n) => {
-        if (c.y > f0 + 1.3) return false;
-        if (Math.abs(c.x - lm.notchX) < 0.1 && c.y > f0 + 0.25) return false;
-        return n.y < -0.25 || (n.z < -0.45 && c.y < f0 + 1.1) || (n.z > 0.4 && c.y > f0 + 0.3 && Math.abs(c.x - lm.notchX) < 0.8);
-      },
-      0.028,
-    );
-    const yPlate = Math.min(lm.medial.y, lm.lateral.y);
-    const cartT = extractPatch(
-      geo.tibia,
-      (c, n) => n.y > 0.72 && c.y > yPlate - 0.07 && Math.hypot(c.x - lm.spine.x, c.z - lm.spine.z) > 0.14,
-      0.02,
-    );
-    const cartP = extractPatch(geo.patella, (_c, n) => n.z < -0.35, 0.022);
-    const mk = (c: typeof lm.medial, open: number, gap: number, wScale: number) =>
-      createMeniscus({
-        cx: c.cx,
-        cz: c.cz,
-        y: c.y + 0.015,
-        rx: c.rx * 0.97,
-        rz: c.rz * 0.97,
-        open,
-        gap,
-        width: c.rx * wScale,
-        height: 0.17,
-      });
-    const toMid = lm.latSign > 0 ? 0 : Math.PI;
-    const medialM = mk(lm.medial, toMid, 1.05, 0.5);
-    const lateralM = mk(lm.lateral, toMid + Math.PI, 0.55, 0.42);
-    const menisci = mergeGeometries([medialM, lateralM])!;
-    const bow = (s: number) => new Vector3(0.02 * s, 0, 0.02 * s);
-    const acl = createLigament(lm.aclFemoral, lm.aclTibial, 0.075, 1.4, bow(1));
-    const pcl = createLigament(lm.pclFemoral, lm.pclTibial, 0.09, 1.1, bow(-1));
-    [medialM, lateralM].forEach((g) => g.dispose());
-    return { geo, lm, tissue: { cartF, cartT, cartP, menisci, acl, pcl } };
-  }, [geo]);
-  useEffect(
-    () => () => {
-      Object.values(data.tissue).forEach((g) => g.dispose());
-    },
-    [data],
-  );
-  return data;
-}
+const negPivot = KNEE_PIVOT.clone().multiplyScalar(-1);
+const patellaLocal = PATELLA_POS.clone().sub(KNEE_PIVOT);
 
 export interface KneeModelProps {
-  data: KneeData;
   focus: KneeFocus;
-  label?: string;
+  /** Override knee flexion in degrees (default: 40 for the patella focus, else 0). */
+  flexDeg?: number;
 }
 
-/** The knee: real bones + fitted soft tissue. Highlight / x-ray / lift / flex are all damped per frame. */
-export function KneeModel({ data, focus, label }: KneeModelProps) {
-  const { geo, lm, tissue } = data;
-  const dark = useDark();
-  const mats = useMemo(() => {
+/** The whole procedural knee. Highlight / dim / explode / flex are all damped per frame. */
+export function KneeModel({ focus, flexDeg }: KneeModelProps) {
+  const geo = useMemo(
+    () => ({
+      femur: createFemur(),
+      tibia: createTibia(),
+      fibula: createFibula(),
+      patella: createPatella(),
+      cartF: createFemoralCartilage(),
+      cartT: createTibialCartilage(),
+      menisci: createMenisci(),
+      acl: createLigament(ACL_ENDS[0], ACL_ENDS[1], 0.055, 1.5, new Vector3(0.03, 0, 0.03)),
+      pcl: createLigament(PCL_ENDS[0], PCL_ENDS[1], 0.065, 1.2, new Vector3(-0.03, 0, -0.03)),
+    }),
+    [],
+  );
+  const mats = useMemo<Record<PartKey, MeshPhysicalMaterial>>(() => {
     const bone = boneMaterial();
-    const solid: Record<PartKey, MeshPhysicalMaterial> = {
+    return {
       femur: bone,
       tibia: bone.clone(),
-      fibula: bone.clone(),
       patella: bone.clone(),
       cart: cartilageMaterial(),
       menisci: meniscusMaterial(),
       acl: ligamentMaterial(),
       pcl: ligamentMaterial(),
     };
-    const xray = Object.fromEntries(BONES.map((k) => [k, xrayMaterial()])) as Record<string, ReturnType<typeof xrayMaterial>>;
-    return { solid, xray };
   }, []);
-  useEffect(() => {
-    Object.values(mats.xray).forEach((m) => setXrayTheme(m, dark));
-  }, [mats, dark]);
+
   useEffect(
     () => () => {
-      [...Object.values(mats.solid), ...Object.values(mats.xray)].forEach((m: Material) => m.dispose());
+      Object.values(geo).forEach((g) => g.dispose());
+      Object.values(mats).forEach((m) => m.dispose());
     },
-    [mats],
+    [geo, mats],
   );
 
   const state = useRef<{
     lift: number;
     flex: number;
-    xray: number;
     vis: Record<PartKey, number>;
     glow: Record<PartKey, number>;
     transparent: Record<PartKey, boolean>;
@@ -150,8 +99,7 @@ export function KneeModel({ data, focus, label }: KneeModelProps) {
   if (state.current == null) {
     state.current = {
       lift: LIFT[focus],
-      flex: (FLEX[focus] * Math.PI) / 180,
-      xray: XRAY[focus],
+      flex: ((flexDeg ?? (focus === "patella" ? 40 : 0)) * Math.PI) / 180,
       vis: { ...VIS[focus] },
       glow: Object.fromEntries(PARTS.map((k) => [k, GLOW[focus].includes(k) ? 1 : 0])) as Record<PartKey, number>,
       transparent: Object.fromEntries(PARTS.map((k) => [k, false])) as Record<PartKey, boolean>,
@@ -161,24 +109,20 @@ export function KneeModel({ data, focus, label }: KneeModelProps) {
   const femurGroup = useRef<Group>(null);
   const tibiaGroup = useRef<Group>(null);
   const patellaGroup = useRef<Group>(null);
-  const pivot = lm.pivot;
-  const negPivot = useMemo(() => pivot.clone().multiplyScalar(-1), [pivot]);
 
   useFrame((s, delta) => {
     const dt = Math.min(delta, 0.05);
     const st = state.current!;
-    const flexTarget = (FLEX[focus] * Math.PI) / 180;
-    st.lift = damp(st.lift, LIFT[focus], 2.6, dt);
-    st.flex = damp(st.flex, flexTarget, 2.6, dt);
-    st.xray = damp(st.xray, XRAY[focus], 4, dt);
+    const flexTarget = ((flexDeg ?? (focus === "patella" ? 40 : 0)) * Math.PI) / 180;
+    st.lift = damp(st.lift, LIFT[focus], 3, dt);
+    st.flex = damp(st.flex, flexTarget, 3, dt);
     if (femurGroup.current) femurGroup.current.position.y = st.lift;
     if (tibiaGroup.current) tibiaGroup.current.rotation.x = st.flex;
     if (patellaGroup.current) patellaGroup.current.rotation.x = st.flex * 0.55;
 
-    const t = s.clock.elapsedTime;
-    const pulse = 0.75 + 0.25 * Math.sin(t * 2.6);
+    const pulse = 0.8 + 0.2 * Math.sin(s.clock.elapsedTime * 2.6);
     for (const k of PARTS) {
-      const m = mats.solid[k];
+      const m = mats[k];
       st.vis[k] = damp(st.vis[k], VIS[focus][k], 4, dt);
       st.glow[k] = damp(st.glow[k], GLOW[focus].includes(k) ? 1 : 0, 4, dt);
       const op = st.vis[k] * BASE_OPACITY[k];
@@ -188,51 +132,28 @@ export function KneeModel({ data, focus, label }: KneeModelProps) {
         patch(m, { transparent: transparent || k === "cart", depthWrite: !transparent || op > 0.9, needsUpdate: true });
       }
       patch(m, { opacity: op, visible: op > 0.01, emissiveIntensity: st.glow[k] * GLOW_PEAK * pulse });
-      if (k in mats.xray) {
-        const x = mats.xray[k];
-        const a = (1 - st.vis[k]) * st.xray;
-        x.visible = a > 0.01;
-        x.uniforms.uOpacity.value = a;
-        x.uniforms.uTime.value = t;
-      }
     }
   });
-
-  const mesh = (k: "femur" | "tibia" | "fibula" | "patella") => (
-    <>
-      <mesh geometry={geo[k]} material={mats.solid[k]} />
-      <mesh geometry={geo[k]} material={mats.xray[k]} renderOrder={2} />
-    </>
-  );
-  const at = (v: Vector3): [number, number, number] => [v.x, v.y, v.z];
-  const mid = lm.aclFemoral.clone().lerp(lm.aclTibial, 0.5);
 
   return (
     <group>
       <group ref={femurGroup}>
-        {mesh("femur")}
-        <mesh geometry={tissue.cartF} material={mats.solid.cart} />
-        <group ref={patellaGroup} position={pivot}>
-          <group position={negPivot}>
-            {mesh("patella")}
-            <mesh geometry={tissue.cartP} material={mats.solid.cart} />
-            {label && focus === "patella" && <Tag key="p" text={label} at={at(lm.patellaFront)} />}
-          </group>
+        <mesh geometry={geo.femur} material={mats.femur} />
+        <mesh geometry={geo.cartF} material={mats.cart} />
+        <group ref={patellaGroup} position={KNEE_PIVOT}>
+          <mesh geometry={geo.patella} material={mats.patella} position={patellaLocal} />
         </group>
-        {label && focus === "cartilage" && <Tag key="c" text={label} at={at(lm.medialCondyle)} />}
       </group>
-      <group ref={tibiaGroup} position={pivot}>
+      <group ref={tibiaGroup} position={KNEE_PIVOT}>
         <group position={negPivot}>
-          {mesh("tibia")}
-          {mesh("fibula")}
-          <mesh geometry={tissue.cartT} material={mats.solid.cart} />
-          <mesh geometry={tissue.menisci} material={mats.solid.menisci} />
-          {label && focus === "meniscus" && <Tag key="m" text={label} at={at(lm.meniscusRim)} />}
+          <mesh geometry={geo.tibia} material={mats.tibia} />
+          <mesh geometry={geo.fibula} material={mats.tibia} />
+          <mesh geometry={geo.cartT} material={mats.cart} />
+          <mesh geometry={geo.menisci} material={mats.menisci} />
         </group>
       </group>
-      <mesh geometry={tissue.acl} material={mats.solid.acl} />
-      <mesh geometry={tissue.pcl} material={mats.solid.pcl} />
-      {label && focus === "acl" && <Tag key="a" text={label} at={at(mid)} />}
+      <mesh geometry={geo.acl} material={mats.acl} />
+      <mesh geometry={geo.pcl} material={mats.pcl} />
     </group>
   );
 }
