@@ -1,1 +1,23 @@
-{}
+{
+  "open": "Open the assistant",
+  "close": "Close",
+  "dialog": "Virtual assistant",
+  "placeholder": "Type your message…",
+  "send": "Send",
+  "stop": "Stop",
+  "call": "Call now",
+  "disclaimer": "General information only, not medical advice. In an emergency call 112.",
+  "thinking": "Typing…",
+  "searching": "Searching the documents…",
+  "fallback": "I'm unavailable right now. Please call {phone}.",
+  "rateLimited": "You have sent many messages in a short time. Please call {phone} or try again later.",
+  "tooLong": "Your message is too long (max {max} characters).",
+  "limitReached": "This conversation has reached its message limit. Please call {phone}.",
+  "error": "Something went wrong. Please try again or call {phone}.",
+  "callbackOk": "Callback request sent",
+  "callbackFail": "The request could not be sent",
+  "suggestionsLabel": "Quick questions",
+  "messages": "Conversation",
+  "assistant": "Assistant",
+  "you": "You"
+}

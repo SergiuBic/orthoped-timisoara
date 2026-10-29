@@ -1,1 +1,57 @@
-{}
+{
+  "nav": { "label": "Sezioni admin", "overview": "Panoramica", "settings": "Contatti e SEO", "content": "Contenuti", "media": "Media", "ai": "Assistente AI", "knowledge": "Conoscenza", "leads": "Contatti", "conversations": "Conversazioni", "admins": "Admin" },
+  "top": { "viewSite": "Vedi il sito", "language": "Lingua admin", "logout": "Esci" },
+  "login": { "title": "Cabina di regia", "subtitle": "Accedi per gestire il tuo sito.", "google": "Continua con Google", "failed": "Impossibile avviare l'accesso. Riprova.", "unauthorized": "Questo account non è autorizzato." },
+  "common": { "noData": "Ancora nessun dato" },
+  "overview": {
+    "title": "Panoramica", "range": "Periodo", "days": "{n} giorni",
+    "tiles": { "visitors": "Visitatori", "phone": "Click telefono", "whatsapp": "Click WhatsApp", "maps": "Click indicazioni", "callbacks": "Richieste di richiamata", "chats": "Conversazioni chat", "conversion": "Tasso di conversione" },
+    "charts": { "daily": "Visitatori e conversioni", "conversions": "Conversioni", "placements": "Click per posizione", "clicks": "Click", "devices": "Dispositivi", "locales": "Ripartizione lingue" },
+    "referrers": "Principali provenienze",
+    "attention": { "title": "Da controllare", "newLeads": "{n} nuovi contatti", "errorFiles": "{n} file di conoscenza in errore", "todos": "{n} campi ancora contrassegnati TODO-DOCTOR", "show": "Mostra i campi" }
+  },
+  "settings": {
+    "title": "Contatti e SEO", "sub": "Dati di contatto, città, orari. Il salvataggio aggiorna tutto il sito pubblico.", "saved": "Impostazioni salvate",
+    "geoOk": "Coordinate trovate", "geoFail": "Indirizzo non trovato", "doctor": "Medico e studio", "doctorName": "Nome del medico", "doctorTitles": "Titoli", "clinicName": "Nome dello studio",
+    "phone": "Telefono (internazionale)", "phoneDisplay": "Telefono visualizzato", "whatsapp": "Numero WhatsApp", "email": "Email pubblica", "emptyHides": "Lascia vuoto per nascondere", "siteUrl": "URL del sito",
+    "address": "Indirizzo", "city": "Città per lingua", "cityNote": "La città è usata in tutti i titoli e nei risultati di Google.", "street": "Via e numero", "region": "Provincia / regione", "postalCode": "CAP", "country": "Codice paese",
+    "lat": "Latitudine", "lng": "Longitudine", "findCoords": "Trova dall'indirizzo", "mapsUrl": "Link Google Maps",
+    "hours": "Orari di apertura", "day": "Giorno", "opens": "Apre", "closes": "Chiude", "remove": "Rimuovi", "addRow": "Aggiungi riga",
+    "days": { "Mo": "Lunedì", "Tu": "Martedì", "We": "Mercoledì", "Th": "Giovedì", "Fr": "Venerdì", "Sa": "Sabato", "Su": "Domenica" },
+    "social": "Link social", "preview": "Anteprima su Google", "save": "Salva impostazioni"
+  },
+  "content": {
+    "title": "Contenuti", "sub": "Modifica ogni testo in tre lingue. Usa '{city}', '{doctor}' e '{phone}' come segnaposto.", "locale": "Lingua", "open": "Modifica", "tokens": "Segnaposto: '{city}' '{doctor}' '{phone}'", "preview": "Anteprima",
+    "up": "Sposta su", "down": "Sposta giù", "remove": "Rimuovi", "add": "Aggiungi", "addPlaceholder": "Scrivi e premi Invio",
+    "save": "Salva", "saved": "Salvato", "reset": "Ripristina predefinito", "resetConfirm": "Eliminare le tue modifiche a questa sezione e ripristinare il testo predefinito?", "resetDone": "Ripristinato il predefinito",
+    "translate": "Traduci dal RO", "translating": "Traduzione in corso…", "translated": "Tradotto. Controlla il testo, poi premi Salva.", "noApiKey": "Traduzione non disponibile: la chiave API di Gemini non è configurata.", "aiFailed": "Il servizio di traduzione è occupato o ha fallito. Riprova tra un minuto."
+  },
+  "media": {
+    "title": "Media", "sub": "Le foto vengono ridimensionate e ottimizzate automaticamente.", "upload": "Carica immagini", "uploaded": "caricato", "limits": "JPG, PNG o WebP, fino a 8 MB ciascuna.", "tooLarge": "file troppo grande", "badType": "tipo non supportato", "failed": "errore",
+    "empty": "Ancora nessuna immagine.", "alt": "Testo alternativo", "usePhoto": "Usa come foto del medico", "isPhoto": "Foto attuale del medico", "photoSet": "Foto del medico aggiornata", "delete": "Elimina", "deleteConfirm": "Eliminare questa immagine?"
+  },
+  "ai": {
+    "title": "Assistente AI", "saved": "Assistente salvato", "enabled": "Mostra l'assistente sul sito", "assistantName": "Nome dell'assistente", "persona": "Personalità", "personaHint": "Scrivi come se spiegassi a un nuovo assistente come parli con i pazienti.",
+    "rules": "Regole aggiuntive", "remove": "Rimuovi", "addRule": "Aggiungi regola", "greeting": "Saluto", "suggestions": "Risposte rapide", "suggestionsHint": "Una per riga, massimo 4",
+    "model": "Modello", "customModel": "Altro…", "modelId": "ID del modello", "temperature": "Temperatura", "maxMessages": "Messaggi massimi per conversazione", "dailyLimit": "Risposte massime al giorno", "save": "Salva assistente",
+    "playground": "Prova", "playgroundHint": "Usa le impostazioni salvate. Non registrato, senza limiti.", "language": "Lingua", "chatError": "L'assistente non ha potuto rispondere. Controlla la chiave API e il modello.", "chatPlaceholder": "Chiedi qualcosa…", "send": "Invia"
+  },
+  "knowledge": {
+    "title": "Conoscenza", "sub": "Documenti che l'assistente può usare per rispondere.", "badType": "tipo non supportato", "tooLarge": "file oltre 20 MB", "uploaded": "caricato", "failed": "errore", "done": "Fatto",
+    "drop": "Trascina qui i file", "limits": "PDF, DOCX, XLSX, CSV, TXT, MD fino a 20 MB", "choose": "Scegli i file", "files": "File", "reindex": "Reindicizza i contenuti del sito", "reindexed": "Contenuti del sito reindicizzati", "empty": "Ancora nessun file.",
+    "name": "Nome", "size": "Dimensione", "status": "Stato", "chunks": "Frammenti", "date": "Data",
+    "st": { "pending": "In attesa", "processing": "In elaborazione", "ready": "Pronto", "error": "Errore" },
+    "reprocess": "Rielabora", "delete": "Elimina", "deleteConfirm": "Eliminare questo file e il testo indicizzato?",
+    "testSearch": "Prova la ricerca", "searchPlaceholder": "es. prezzo LCA", "search": "Cerca", "searchFailed": "Ricerca non riuscita", "noHits": "Nessun risultato.", "score": "Punteggio"
+  },
+  "leads": {
+    "title": "Contatti", "export": "Esporta CSV", "all": "Tutti", "st": { "new": "Nuovo", "contacted": "Contattato", "closed": "Chiuso", "spam": "Spam" },
+    "empty": "Nessun contatto.", "date": "Data", "name": "Nome", "phone": "Telefono", "source": "Origine", "locale": "Lingua", "message": "Messaggio", "status": "Stato"
+  },
+  "conversations": { "title": "Conversazioni", "notice": "Eliminate automaticamente dopo 30 giorni.", "empty": "Nessuna conversazione.", "messages": "{n} messaggi", "hasLead": "Ha lasciato i contatti", "pick": "Seleziona una conversazione." },
+  "admins": {
+    "title": "Admin", "sub": "Persone che possono accedere a questa area.", "email": "Indirizzo Gmail", "add": "Aggiungi admin", "added": "Admin aggiunto", "invalidEmail": "Inserisci un indirizzo email valido.", "cannotSelf": "Non puoi rimuovere te stesso.", "cannotOwner": "I proprietari sono configurati sul server e non si possono rimuovere qui.",
+    "owner": "proprietario", "you": "tu", "addedBy": "aggiunto da {email}", "remove": "Rimuovi", "removeConfirm": "Rimuovere {email}?", "removed": "Admin rimosso",
+    "hint": "Il Gmail aggiunto deve essere anche un utente di test nella schermata di consenso OAuth di Google finché l'app è in modalità Test."
+  }
+}

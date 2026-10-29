@@ -11,7 +11,7 @@ import { Footer } from "@/components/site/footer";
 import { StickyActionBar } from "@/components/site/sticky-action-bar";
 import { PageViewTracker } from "@/components/site/page-view-tracker";
 import type { ServiceSlugMap } from "@/components/site/locale-switcher";
-// TODO(task 08): render <ChatLauncher /> from "@/components/chat" here (after <StickyActionBar />).
+import { ChatLauncher } from "@/components/chat";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -83,6 +83,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
             whatsapp={settings.whatsapp}
             mapsUrl={settings.address.mapsUrl}
           />
+          <ChatLauncher locale={locale} />
           <PageViewTracker />
         </NextIntlClientProvider>
       </body>

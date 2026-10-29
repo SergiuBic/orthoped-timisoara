@@ -1,1 +1,23 @@
-{}
+{
+  "open": "Apri l'assistente",
+  "close": "Chiudi",
+  "dialog": "Assistente virtuale",
+  "placeholder": "Scrivi il tuo messaggio…",
+  "send": "Invia",
+  "stop": "Ferma",
+  "call": "Chiama ora",
+  "disclaimer": "Solo informazioni generali, non un parere medico. In emergenza chiama il 112.",
+  "thinking": "Sta scrivendo…",
+  "searching": "Cerco nei documenti…",
+  "fallback": "Al momento non sono disponibile. Chiama il {phone}.",
+  "rateLimited": "Hai inviato molti messaggi in poco tempo. Chiama il {phone} o riprova più tardi.",
+  "tooLong": "Il messaggio è troppo lungo (massimo {max} caratteri).",
+  "limitReached": "Questa conversazione ha raggiunto il limite di messaggi. Chiama il {phone}.",
+  "error": "Si è verificato un errore. Riprova o chiama il {phone}.",
+  "callbackOk": "Richiesta di richiamata inviata",
+  "callbackFail": "Impossibile inviare la richiesta",
+  "suggestionsLabel": "Domande rapide",
+  "messages": "Conversazione",
+  "assistant": "Assistente",
+  "you": "Tu"
+}

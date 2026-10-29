@@ -1,1 +1,57 @@
-{}
+{
+  "nav": { "label": "Secțiuni admin", "overview": "Prezentare", "settings": "Contact și SEO", "content": "Conținut", "media": "Media", "ai": "Asistent AI", "knowledge": "Cunoștințe", "leads": "Solicitări", "conversations": "Conversații", "admins": "Administratori" },
+  "top": { "viewSite": "Vezi site-ul", "language": "Limba admin", "logout": "Deconectare" },
+  "login": { "title": "Panoul medicului", "subtitle": "Autentifică-te pentru a gestiona site-ul.", "google": "Continuă cu Google", "failed": "Autentificarea nu a putut porni. Încearcă din nou.", "unauthorized": "Acest cont nu este autorizat." },
+  "common": { "noData": "Încă nu există date" },
+  "overview": {
+    "title": "Prezentare", "range": "Perioadă", "days": "{n} zile",
+    "tiles": { "visitors": "Vizitatori", "phone": "Click-uri telefon", "whatsapp": "Click-uri WhatsApp", "maps": "Click-uri indicații", "callbacks": "Cereri de apel înapoi", "chats": "Conversații chat", "conversion": "Rata de conversie" },
+    "charts": { "daily": "Vizitatori și conversii", "conversions": "Conversii", "placements": "Click-uri pe locație", "clicks": "Click-uri", "devices": "Dispozitive", "locales": "Distribuția limbilor" },
+    "referrers": "Surse principale",
+    "attention": { "title": "Necesită atenție", "newLeads": "{n} solicitări noi", "errorFiles": "{n} fișiere de cunoștințe cu eroare", "todos": "{n} câmpuri încă marcate TODO-DOCTOR", "show": "Arată câmpurile" }
+  },
+  "settings": {
+    "title": "Contact și SEO", "sub": "Date de contact, oraș, program. Salvarea actualizează tot site-ul public.", "saved": "Setări salvate",
+    "geoOk": "Coordonate găsite", "geoFail": "Adresa nu a fost găsită", "doctor": "Medic și cabinet", "doctorName": "Numele medicului", "doctorTitles": "Titluri", "clinicName": "Numele cabinetului",
+    "phone": "Telefon (internațional)", "phoneDisplay": "Telefon afișat", "whatsapp": "Număr WhatsApp", "email": "Email public", "emptyHides": "Lasă gol pentru a ascunde", "siteUrl": "URL site",
+    "address": "Adresă", "city": "Orașul pe limbă", "cityNote": "Orașul este folosit în toate titlurile și în rezultatele Google.", "street": "Stradă și număr", "region": "Județ / regiune", "postalCode": "Cod poștal", "country": "Cod țară",
+    "lat": "Latitudine", "lng": "Longitudine", "findCoords": "Găsește din adresă", "mapsUrl": "Link Google Maps",
+    "hours": "Program", "day": "Zi", "opens": "Deschide", "closes": "Închide", "remove": "Șterge", "addRow": "Adaugă rând",
+    "days": { "Mo": "Luni", "Tu": "Marți", "We": "Miercuri", "Th": "Joi", "Fr": "Vineri", "Sa": "Sâmbătă", "Su": "Duminică" },
+    "social": "Linkuri sociale", "preview": "Previzualizare în Google", "save": "Salvează setările"
+  },
+  "content": {
+    "title": "Conținut", "sub": "Editează fiecare text în trei limbi. Folosește '{city}', '{doctor}' și '{phone}' ca marcaje.", "locale": "Limba", "open": "Editează", "tokens": "Marcaje: '{city}' '{doctor}' '{phone}'", "preview": "Previzualizare",
+    "up": "Mută sus", "down": "Mută jos", "remove": "Șterge", "add": "Adaugă", "addPlaceholder": "Scrie și apasă Enter",
+    "save": "Salvează", "saved": "Salvat", "reset": "Revino la implicit", "resetConfirm": "Ștergi modificările pentru această secțiune și revii la textul implicit?", "resetDone": "Revenit la implicit",
+    "translate": "Tradu din RO", "translating": "Se traduce…", "translated": "Tradus. Verifică textul, apoi apasă Salvează.", "noApiKey": "Traducerea nu este disponibilă: cheia API Gemini nu este configurată.", "aiFailed": "Serviciul de traducere este ocupat sau a eșuat. Încearcă din nou peste un minut."
+  },
+  "media": {
+    "title": "Media", "sub": "Pozele sunt redimensionate și optimizate automat.", "upload": "Încarcă imagini", "uploaded": "încărcat", "limits": "JPG, PNG sau WebP, maximum 8 MB fiecare.", "tooLarge": "fișier prea mare", "badType": "tip nesuportat", "failed": "eroare",
+    "empty": "Încă nu există imagini.", "alt": "Text alternativ", "usePhoto": "Folosește ca poză a medicului", "isPhoto": "Poza curentă a medicului", "photoSet": "Poza medicului actualizată", "delete": "Șterge", "deleteConfirm": "Ștergi această imagine?"
+  },
+  "ai": {
+    "title": "Asistent AI", "saved": "Asistent salvat", "enabled": "Afișează asistentul pe site", "assistantName": "Numele asistentului", "persona": "Personalitate", "personaHint": "Scrie ca și cum ai explica unui asistent nou cum vorbești cu pacienții.",
+    "rules": "Reguli suplimentare", "remove": "Șterge", "addRule": "Adaugă regulă", "greeting": "Salut", "suggestions": "Răspunsuri rapide", "suggestionsHint": "Unul pe rând, maximum 4",
+    "model": "Model", "customModel": "Altul…", "modelId": "ID model", "temperature": "Temperatură", "maxMessages": "Mesaje maxime pe conversație", "dailyLimit": "Răspunsuri maxime pe zi", "save": "Salvează asistentul",
+    "playground": "Test", "playgroundHint": "Folosește setările salvate. Fără înregistrare, fără limite.", "language": "Limba", "chatError": "Asistentul nu a putut răspunde. Verifică cheia API și modelul.", "chatPlaceholder": "Întreabă ceva…", "send": "Trimite"
+  },
+  "knowledge": {
+    "title": "Cunoștințe", "sub": "Documente pe care asistentul le poate folosi pentru a răspunde.", "badType": "tip nesuportat", "tooLarge": "fișier peste 20 MB", "uploaded": "încărcat", "failed": "eroare", "done": "Gata",
+    "drop": "Trage fișierele aici", "limits": "PDF, DOCX, XLSX, CSV, TXT, MD până la 20 MB", "choose": "Alege fișiere", "files": "Fișiere", "reindex": "Reindexează conținutul site-ului", "reindexed": "Conținutul site-ului a fost reindexat", "empty": "Încă nu există fișiere.",
+    "name": "Nume", "size": "Mărime", "status": "Stare", "chunks": "Fragmente", "date": "Data",
+    "st": { "pending": "În așteptare", "processing": "Se procesează", "ready": "Gata", "error": "Eroare" },
+    "reprocess": "Reprocesează", "delete": "Șterge", "deleteConfirm": "Ștergi acest fișier și textul indexat?",
+    "testSearch": "Testează căutarea", "searchPlaceholder": "ex. preț LCA", "search": "Caută", "searchFailed": "Căutarea a eșuat", "noHits": "Niciun rezultat.", "score": "Scor"
+  },
+  "leads": {
+    "title": "Solicitări", "export": "Exportă CSV", "all": "Toate", "st": { "new": "Nou", "contacted": "Contactat", "closed": "Închis", "spam": "Spam" },
+    "empty": "Nicio solicitare.", "date": "Data", "name": "Nume", "phone": "Telefon", "source": "Sursă", "locale": "Limbă", "message": "Mesaj", "status": "Stare"
+  },
+  "conversations": { "title": "Conversații", "notice": "Șterse automat după 30 de zile.", "empty": "Nicio conversație.", "messages": "{n} mesaje", "hasLead": "A lăsat datele de contact", "pick": "Alege o conversație." },
+  "admins": {
+    "title": "Administratori", "sub": "Persoanele care se pot autentifica în acest panou.", "email": "Adresă Gmail", "add": "Adaugă administrator", "added": "Administrator adăugat", "invalidEmail": "Introdu o adresă de email validă.", "cannotSelf": "Nu te poți șterge pe tine.", "cannotOwner": "Proprietarii sunt configurați pe server și nu pot fi șterși aici.",
+    "owner": "proprietar", "you": "tu", "addedBy": "adăugat de {email}", "remove": "Șterge", "removeConfirm": "Ștergi {email}?", "removed": "Administrator șters",
+    "hint": "Adresa Gmail adăugată trebuie să fie și utilizator de test în ecranul de consimțământ OAuth Google cât timp aplicația este în modul Testing."
+  }
+}

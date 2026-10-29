@@ -1,1 +1,23 @@
-{}
+{
+  "open": "Deschide asistentul",
+  "close": "Închide",
+  "dialog": "Asistent virtual",
+  "placeholder": "Scrieți mesajul…",
+  "send": "Trimite",
+  "stop": "Oprește",
+  "call": "Sună acum",
+  "disclaimer": "Doar informații generale, nu sfat medical. În urgențe sunați la 112.",
+  "thinking": "Se scrie…",
+  "searching": "Caut în documente…",
+  "fallback": "Momentan sunt indisponibil. Vă rugăm să sunați la {phone}.",
+  "rateLimited": "Ați trimis multe mesaje într-un timp scurt. Vă rugăm să sunați la {phone} sau încercați mai târziu.",
+  "tooLong": "Mesajul este prea lung (maxim {max} caractere).",
+  "limitReached": "Această conversație a atins limita de mesaje. Vă rugăm să sunați la {phone}.",
+  "error": "A apărut o eroare. Încercați din nou sau sunați la {phone}.",
+  "callbackOk": "Cerere de apelare trimisă",
+  "callbackFail": "Cererea nu a putut fi trimisă",
+  "suggestionsLabel": "Întrebări rapide",
+  "messages": "Conversație",
+  "assistant": "Asistent",
+  "you": "Dumneavoastră"
+}

@@ -1,1 +1,57 @@
-{}
+{
+  "nav": { "label": "Admin sections", "overview": "Overview", "settings": "Contact & SEO", "content": "Content", "media": "Media", "ai": "AI Assistant", "knowledge": "Knowledge", "leads": "Leads", "conversations": "Conversations", "admins": "Admins" },
+  "top": { "viewSite": "View site", "language": "Admin language", "logout": "Sign out" },
+  "login": { "title": "Doctor's cockpit", "subtitle": "Sign in to manage your website.", "google": "Continue with Google", "failed": "Sign-in could not be started. Please try again.", "unauthorized": "This account is not authorized." },
+  "common": { "noData": "No data yet" },
+  "overview": {
+    "title": "Overview", "range": "Time range", "days": "{n} days",
+    "tiles": { "visitors": "Visitors", "phone": "Phone clicks", "whatsapp": "WhatsApp clicks", "maps": "Directions clicks", "callbacks": "Callback requests", "chats": "Chat conversations", "conversion": "Conversion rate" },
+    "charts": { "daily": "Visitors vs. conversions", "conversions": "Conversions", "placements": "Clicks by placement", "clicks": "Clicks", "devices": "Devices", "locales": "Language split" },
+    "referrers": "Top referrers",
+    "attention": { "title": "Needs attention", "newLeads": "{n} new leads", "errorFiles": "{n} knowledge files in error", "todos": "{n} fields still marked TODO-DOCTOR", "show": "Show fields" }
+  },
+  "settings": {
+    "title": "Contact & SEO", "sub": "Contact details, city, opening hours. Saving updates the whole public site.", "saved": "Settings saved",
+    "geoOk": "Coordinates found", "geoFail": "Address not found", "doctor": "Doctor & clinic", "doctorName": "Doctor name", "doctorTitles": "Titles", "clinicName": "Clinic name",
+    "phone": "Phone (international)", "phoneDisplay": "Phone as displayed", "whatsapp": "WhatsApp number", "email": "Public email", "emptyHides": "Leave empty to hide", "siteUrl": "Site URL",
+    "address": "Address", "city": "City per language", "cityNote": "The city is used in all titles and Google results.", "street": "Street and number", "region": "County / region", "postalCode": "Postal code", "country": "Country code",
+    "lat": "Latitude", "lng": "Longitude", "findCoords": "Find from address", "mapsUrl": "Google Maps link",
+    "hours": "Opening hours", "day": "Day", "opens": "Opens", "closes": "Closes", "remove": "Remove", "addRow": "Add row",
+    "days": { "Mo": "Monday", "Tu": "Tuesday", "We": "Wednesday", "Th": "Thursday", "Fr": "Friday", "Sa": "Saturday", "Su": "Sunday" },
+    "social": "Social links", "preview": "Google snippet preview", "save": "Save settings"
+  },
+  "content": {
+    "title": "Content", "sub": "Edit every text in three languages. Use '{city}', '{doctor}' and '{phone}' as placeholders.", "locale": "Language", "open": "Edit", "tokens": "Tokens: '{city}' '{doctor}' '{phone}'", "preview": "Preview",
+    "up": "Move up", "down": "Move down", "remove": "Remove", "add": "Add", "addPlaceholder": "Type and press Enter",
+    "save": "Save", "saved": "Saved", "reset": "Reset to default", "resetConfirm": "Delete your edits for this section and restore the default text?", "resetDone": "Restored to default",
+    "translate": "Translate from RO", "translating": "Translating…", "translated": "Translated. Review the text, then press Save.", "noApiKey": "Translation is not available: the Gemini API key is not configured.", "aiFailed": "The translation service is busy or failed. Please try again in a minute."
+  },
+  "media": {
+    "title": "Media", "sub": "Photos are resized and optimized automatically.", "upload": "Upload images", "uploaded": "uploaded", "limits": "JPG, PNG or WebP, up to 8 MB each.", "tooLarge": "file too large", "badType": "unsupported type", "failed": "failed",
+    "empty": "No images yet.", "alt": "Alt text", "usePhoto": "Use as doctor photo", "isPhoto": "Current doctor photo", "photoSet": "Doctor photo updated", "delete": "Delete", "deleteConfirm": "Delete this image?"
+  },
+  "ai": {
+    "title": "AI Assistant", "saved": "Assistant saved", "enabled": "Show the assistant on the website", "assistantName": "Assistant name", "persona": "Persona", "personaHint": "Write as if you were explaining to a new assistant how you speak to patients.",
+    "rules": "Extra rules", "remove": "Remove", "addRule": "Add rule", "greeting": "Greeting", "suggestions": "Quick replies", "suggestionsHint": "One per line, max 4",
+    "model": "Model", "customModel": "Other…", "modelId": "Model id", "temperature": "Temperature", "maxMessages": "Max messages per conversation", "dailyLimit": "Max replies per day", "save": "Save assistant",
+    "playground": "Playground", "playgroundHint": "Uses the saved settings. Not logged, no rate limit.", "language": "Language", "chatError": "The assistant could not answer. Check the API key and model.", "chatPlaceholder": "Ask something…", "send": "Send"
+  },
+  "knowledge": {
+    "title": "Knowledge", "sub": "Documents the assistant can use to answer.", "badType": "unsupported type", "tooLarge": "file larger than 20 MB", "uploaded": "uploaded", "failed": "failed", "done": "Done",
+    "drop": "Drop files here", "limits": "PDF, DOCX, XLSX, CSV, TXT, MD up to 20 MB", "choose": "Choose files", "files": "Files", "reindex": "Re-index website content", "reindexed": "Website content re-indexed", "empty": "No files yet.",
+    "name": "Name", "size": "Size", "status": "Status", "chunks": "Chunks", "date": "Date",
+    "st": { "pending": "Pending", "processing": "Processing", "ready": "Ready", "error": "Error" },
+    "reprocess": "Re-process", "delete": "Delete", "deleteConfirm": "Delete this file and its indexed text?",
+    "testSearch": "Test search", "searchPlaceholder": "e.g. price ACL", "search": "Search", "searchFailed": "Search failed", "noHits": "No results.", "score": "Score"
+  },
+  "leads": {
+    "title": "Leads", "export": "Export CSV", "all": "All", "st": { "new": "New", "contacted": "Contacted", "closed": "Closed", "spam": "Spam" },
+    "empty": "No leads.", "date": "Date", "name": "Name", "phone": "Phone", "source": "Source", "locale": "Lang", "message": "Message", "status": "Status"
+  },
+  "conversations": { "title": "Conversations", "notice": "Deleted automatically after 30 days.", "empty": "No conversations.", "messages": "{n} messages", "hasLead": "Left contact details", "pick": "Select a conversation." },
+  "admins": {
+    "title": "Admins", "sub": "People who can sign in to this dashboard.", "email": "Gmail address", "add": "Add admin", "added": "Admin added", "invalidEmail": "Enter a valid email address.", "cannotSelf": "You cannot remove yourself.", "cannotOwner": "Owners are configured on the server and cannot be removed here.",
+    "owner": "owner", "you": "you", "addedBy": "added by {email}", "remove": "Remove", "removeConfirm": "Remove {email}?", "removed": "Admin removed",
+    "hint": "The added Gmail must also be a Test user in the Google OAuth consent screen while the app is in Testing mode."
+  }
+}

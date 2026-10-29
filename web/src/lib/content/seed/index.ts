@@ -60,7 +60,7 @@ export const seedAiSettings: AiSettings = {
     en: ["My knee hurts", "ACL tear", "How do I book a visit?"],
     it: ["Mi fa male il ginocchio", "Rottura del crociato (LCA)", "Come prenoto una visita?"],
   },
-  model: process.env.GEMINI_CHAT_MODEL ?? "gemini-2.5-flash",
+  model: process.env.GEMINI_CHAT_MODEL ?? "gemini-3.1-flash-lite",
   temperature: 0.3,
   maxMessagesPerSession: 30,
   dailyGlobalLimit: 800,
