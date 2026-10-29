@@ -4,3 +4,6 @@ node_modules
 web/.env.local
 .data
 infra/backups/*.sql.gz
+
+# Internal plan (never commit)
+docs/

@@ -14,4 +14,3 @@ cd web && pnpm install && pnpm dev
 Site: http://localhost:3000/ro · Admin: http://localhost:3000/admin · n8n: http://localhost:5678
 
 ## Production
-See [docs/plan/11-deploy-oracle.md](docs/plan/11-deploy-oracle.md). Full plan: [docs/plan/README.md](docs/plan/README.md).
