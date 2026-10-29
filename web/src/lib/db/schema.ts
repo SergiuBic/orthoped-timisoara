@@ -223,3 +223,10 @@ export const chatMessages = pgTable(
   },
   (t) => [index("chat_messages_session").on(t.sessionId)],
 );
+
+/* ───────────── Admin allowlist (managed in /admin, merged with ADMIN_EMAILS env) ───────────── */
+export const adminAllowlist = pgTable("admin_allowlist", {
+  email: text("email").primaryKey(), // always lowercase
+  addedBy: text("added_by"),
+  createdAt: ts("created_at"),
+});

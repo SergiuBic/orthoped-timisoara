@@ -1,4 +1,4 @@
-// Google-only login, restricted to ADMIN_EMAILS (comma separated). No public sign-up.
+// Google-only login. Allowed = ADMIN_EMAILS env (bootstrap/owner) ∪ admin_allowlist table (managed in /admin). No public sign-up.
 import "server-only";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -12,6 +12,14 @@ export const adminEmails = () =>
     .split(",")
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean);
+
+/** Env admins are permanent owners; DB admins are added/removed by any admin in the dashboard. */
+export async function isAllowedEmail(email: string) {
+  const e = email.trim().toLowerCase();
+  if (adminEmails().includes(e)) return true;
+  const row = await db.query.adminAllowlist.findFirst({ where: (t, { eq }) => eq(t.email, e) });
+  return !!row;
+}
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL ?? process.env.SITE_URL,
@@ -31,14 +39,14 @@ export const auth = betterAuth({
   databaseHooks: {
     user: {
       create: {
-        before: async (u) => (adminEmails().includes(u.email.toLowerCase()) ? { data: u } : false),
+        before: async (u) => ((await isAllowedEmail(u.email)) ? { data: u } : false),
       },
     },
     session: {
       create: {
         before: async (s) => {
           const found = await db.query.user.findFirst({ where: (t, { eq }) => eq(t.id, s.userId) });
-          return found && adminEmails().includes(found.email.toLowerCase()) ? { data: s } : false;
+          return found && (await isAllowedEmail(found.email)) ? { data: s } : false;
         },
       },
     },
@@ -49,12 +57,12 @@ export const auth = betterAuth({
 /** Use at the top of every admin page, server action and admin route handler. */
 export async function requireAdmin() {
   const s = await auth.api.getSession({ headers: await headers() });
-  if (!s || !adminEmails().includes(s.user.email.toLowerCase())) redirect("/admin/login");
+  if (!s || !(await isAllowedEmail(s.user.email))) redirect("/admin/login");
   return s;
 }
 
 /** Route-handler variant: returns null instead of redirecting. */
 export async function getAdminOrNull() {
   const s = await auth.api.getSession({ headers: await headers() });
-  return s && adminEmails().includes(s.user.email.toLowerCase()) ? s : null;
+  return s && (await isAllowedEmail(s.user.email)) ? s : null;
 }
